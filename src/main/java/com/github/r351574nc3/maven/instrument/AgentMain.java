@@ -37,6 +37,7 @@ public class AgentMain {
      * @param inst
      */
     public static void premain(String agentArgs, Instrumentation inst) {
+        
     }
 
     /**
