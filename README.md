@@ -39,27 +39,9 @@ java <class name>
 ```
 
 ### With tomcat7-maven-plugin
-Add the following to your `pom.xml`
+Add the following to `MAVEN_OPTS`
+
 ```
-...
-        <plugin>
-          <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat7-maven-plugin</artifactId>
-          <version>${plugin.tomcat.version}</version>
-          <configuration>
-            <path>/${project.artifactId}-${build.environment}</path>
-            <systemProperties>
-              <org.apache.el.parser.SKIP_IDENTIFIER_CHECK>true</org.apache.el.parser.SKIP_IDENTIFIER_CHECK>
-            </systemProperties>
-          </configuration>
-          <dependencies>
-            <dependency>
-              <groupId>mysql</groupId>
-              <artifactId>mysql-connector-java</artifactId>
-              <version>${mysql.version}</version>
-              <scope>provided</scope>
-            </dependency>
-          </dependencies>
-        </plugin>
-...
+export MAVEN_OPTS="-javaagent:path/to/maven-runtime-agent.jar"
+mvn tomcat7:run
 ```
