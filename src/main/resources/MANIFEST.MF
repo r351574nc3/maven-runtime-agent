@@ -1,0 +1,6 @@
+Agent-Class: com.github.r351574nc3.maven.instrument.AgentMain
+Premain-Class: com.github.r351574nc3.maven.instrument.AgentMain
+Boot-Class-Path: 
+Can-Redefine-Classes: True
+Can-Retransform-Classes: True
+Can-Set-Native-Method-Prefix: False
