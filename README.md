@@ -9,6 +9,13 @@ I developed this mostly for Kuali applications. The idea is that institutions ca
 they are running without having to restart. This is also useful for loading updates to libraries they use like Rice or KC/KFS while
 running.
 
+Before you use this agent, you should know that it:
+* Replaces classes and their schemas in the current running JVM.
+* Intended for use with applications that are actively developed and constantly running.
+* Intended to help developers develop without having to stop the application.
+* Embeds Maven in your application. This makes your application dependent upon Maven
+and all its dependencies at delivery.
+
 ## Usage
 
 ### With Tomcat
