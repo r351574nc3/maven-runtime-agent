@@ -105,10 +105,6 @@ public class AgentTest {
 
         assertNotEquals(null, beforeBytes);
         assertNotEquals(null, afterBytes);
-        /*
-        final ClassLoader beforeClassLoader = new URLClassLoader(new URL[] { urlBefore }, getClass().getClassLoader());
-        final ClassLoader afterClassLoader  = new URLClassLoader(new URL[] { urlAfter }, getClass().getClassLoader());
-        */
         
         final ClassLoader beforeClassLoader = new ClassLoader(getClass().getClassLoader()) {
                 public Class findClass(String name) {

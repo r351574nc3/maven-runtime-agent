@@ -42,9 +42,6 @@ public class DefaultClassFileTransformer implements java.lang.instrument.ClassFi
                             final byte[] classfileBuffer)
         throws IllegalClassFormatException {
 
-        if (className.indexOf("FileSet") > -1) {
-            info("Reloading %s", className);
-        }
         return classfileBuffer;
     }
 }
