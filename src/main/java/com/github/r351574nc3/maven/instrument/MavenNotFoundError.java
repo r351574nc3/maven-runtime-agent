@@ -23,44 +23,15 @@
  */
 package com.github.r351574nc3.maven.instrument;
 
-import static com.github.r351574nc3.java.logging.FormattedLogger.*;
-
-import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.Instrumentation;
 
 /**
- * Main agent class
+ * Error thrown when the <code>M2_HOME</code> environment variable isn't properly set.
  *
- * @author Leo Przybylski
+ * @author Leo Przybylski (r351574nc3 [at] gmail.com)
  */
-public class AgentMain {
-
-    public static final String MAVEN_HOME_KEY = "M2_HOME";
-
-    protected static String getMavenHome() {
-        return System.getenv(MAVEN_HOME_KEY);
-    }
-    
-    /**
-     * @param agentArgs
-     * @param inst
-     */
-    public static void premain(final String agentArgs, final Instrumentation inst) {
-        if (AgentMain.getMavenHome() == null) {
-            throw new MavenNotFoundError();
-        }
-        info("M2_HOME: %s", AgentMain.getMavenHome());
-    }
-
-    /**
-     * @param agentArgs
-     * @param inst
-     */
-    public static void agentmain(final String agentArgs, final Instrumentation inst) {
-        unregisterAllTransformers();
-        premain(agentArgs, inst);
-    }
-
-    public static void unregisterAllTransformers() {
+public class MavenNotFoundError extends Error {
+    private static final String MAVEN_MISSING_FORMAT = "M2_HOME environment variable is not set. You are required to set it to use this agent";
+    public MavenNotFoundError() {
+        super(MAVEN_MISSING_FORMAT);
     }
 }
