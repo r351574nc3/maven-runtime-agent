@@ -23,45 +23,28 @@
  */
 package com.github.r351574nc3.maven.instrument;
 
+import java.lang.instrument.IllegalClassFormatException;
+import java.security.ProtectionDomain;
+
 import static com.github.r351574nc3.java.logging.FormattedLogger.*;
 
-import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.Instrumentation;
-
 /**
- * Main agent class
+ * First attempt at a {@link ClassFileTransformer} implementation
  *
- * @author Leo Przybylski
+ * @author Leo Przybylski (r351574nc3 [at] gmail.com)
  */
-public class AgentMain {
-
-    public static final String MAVEN_HOME_KEY = "M2_HOME";
-
-    protected static String getMavenHome() {
-        return System.getenv(MAVEN_HOME_KEY);
-    }
+public class DefaultClassFileTransformer implements java.lang.instrument.ClassFileTransformer {
     
-    /**
-     * @param agentArgs
-     * @param inst
-     */
-    public static void premain(final String agentArgs, final Instrumentation inst) {
-        if (AgentMain.getMavenHome() == null) {
-            throw new MavenNotFoundError();
+    public byte[] transform(final ClassLoader loader,
+                            final String className,
+                            final Class<?> classBeingRedefined,
+                            final ProtectionDomain protectionDomain,
+                            final byte[] classfileBuffer)
+        throws IllegalClassFormatException {
+
+        if (className.indexOf("FileSet") > -1) {
+            info("Reloading %s", className);
         }
-        info("M2_HOME: %s", AgentMain.getMavenHome());
-        inst.addTransformer(new DefaultClassFileTransformer());
-    }
-
-    /**
-     * @param agentArgs
-     * @param inst
-     */
-    public static void agentmain(final String agentArgs, final Instrumentation inst) {
-        unregisterAllTransformers();
-        premain(agentArgs, inst);
-    }
-
-    public static void unregisterAllTransformers() {
+        return classfileBuffer;
     }
 }

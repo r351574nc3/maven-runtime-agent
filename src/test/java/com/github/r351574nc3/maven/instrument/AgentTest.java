@@ -124,8 +124,8 @@ public class AgentTest {
 
 
         try {
+            beforeClassLoader.loadClass("TestRedefine1");
             final Class beforeClass = beforeClassLoader.loadClass("TestRedefine1");
-
             final String result = (String) beforeClass.getMethod("getString").invoke(null);
             assertEquals(result, "Test");
         }
@@ -134,6 +134,7 @@ public class AgentTest {
         }
 
         try {
+            afterClassLoader.loadClass("TestRedefine1");
             final Class afterClass = afterClassLoader.loadClass("TestRedefine1");            
             final String result = (String) afterClass.getMethod("getString").invoke(null);
             assertEquals(result, "Redefined");
