@@ -55,6 +55,8 @@
         <version>${surefire.version}</version>
         <configuration>
           <argLine>-javaagent:${project.build.directory}/${project.artifactId}-${project.version}.jar</argLine>
+          <systemPropertyVariables>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
       <plugin>
