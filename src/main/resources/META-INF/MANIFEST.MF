@@ -1,5 +1,5 @@
-Agent-Class: com.github.r351574nc3.maven.instrument.AgentMain
-Premain-Class: com.github.r351574nc3.maven.instrument.AgentMain
+Agent-Class: com.github.r351574nc3.classworlds.launcher.Launcher
+Premain-Class: com.github.r351574nc3.classworlds.launcher.Launcher
 Boot-Class-Path: 
 Can-Redefine-Classes: True
 Can-Retransform-Classes: True

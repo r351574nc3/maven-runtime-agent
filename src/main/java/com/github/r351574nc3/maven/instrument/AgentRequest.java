@@ -26,13 +26,13 @@ package com.github.r351574nc3.maven.instrument;
 import java.io.File;
 import java.util.Properties;
 
-import org.apache.commons.cli.CommandLine;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.codehaus.plexus.classworlds.ClassWorld;
 
 /**
  *
+ * @author Leo Przybylski (lprzybylski [at] kuali.org)
  */
 public class AgentRequest {
     protected String[] args;
@@ -54,10 +54,6 @@ public class AgentRequest {
 
     public String[] getArgs() {
         return args;
-    }
-
-    public CommandLine getCommandLine() {
-        return commandLine;
     }
 
     public ClassWorld getClassWorld() {
