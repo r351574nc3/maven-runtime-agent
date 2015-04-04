@@ -24,12 +24,29 @@
 package com.github.r351574nc3.maven.instrument;
 
 import static com.github.r351574nc3.java.logging.FormattedLogger.*;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 
 /**
- * Main agent class
+ * Main agent class. The agent creates a background thread that scans the classpath for changes to jar files
  *
  * @author Leo Przybylski
  */
@@ -37,9 +54,13 @@ public class AgentMain {
 
     public static final String MAVEN_HOME_KEY = "M2_HOME";
 
+    public AgentMain() {
+    }
+
     protected static String getMavenHome() {
         return System.getenv(MAVEN_HOME_KEY);
     }
+
     
     /**
      * @param agentArgs
@@ -49,8 +70,12 @@ public class AgentMain {
         if (AgentMain.getMavenHome() == null) {
             throw new MavenNotFoundError();
         }
+
         info("M2_HOME: %s", AgentMain.getMavenHome());
         inst.addTransformer(new DefaultClassFileTransformer());
+
+        
+        new Thread(new MavenLoader(AgentMain.getMavenHome())).start();
     }
 
     /**
