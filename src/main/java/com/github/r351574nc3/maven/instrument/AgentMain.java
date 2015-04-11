@@ -27,6 +27,10 @@ import static com.github.r351574nc3.java.logging.FormattedLogger.*;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -66,13 +70,14 @@ public class AgentMain {
      * @param agentArgs
      * @param inst
      */
-    public static void premain(final String agentArgs, final Instrumentation inst) {
+//     public static void premain(final String agentArgs, final Instrumentation inst) {
+    public static void premain(final String agentArgs, final Instrumentation inst, final ClassWorld world) {
         if (AgentMain.getMavenHome() == null) {
             throw new MavenNotFoundError();
         }
 
         info("M2_HOME: %s", AgentMain.getMavenHome());
-        inst.addTransformer(new DefaultClassFileTransformer());
+        // inst.addTransformer(new DefaultClassFileTransformer());
 
         
         new Thread(new MavenLoader(AgentMain.getMavenHome())).start();
@@ -82,11 +87,13 @@ public class AgentMain {
      * @param agentArgs
      * @param inst
      */
+    /*
     public static void agentmain(final String agentArgs, final Instrumentation inst) {
         unregisterAllTransformers();
         premain(agentArgs, inst);
     }
 
     public static void unregisterAllTransformers() {
-    }
+    }*/
+
 }

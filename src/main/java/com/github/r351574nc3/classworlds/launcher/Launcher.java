@@ -58,6 +58,7 @@ public class Launcher extends org.codehaus.plexus.classworlds.launcher.Launcher 
     protected String mainClassName;  
     protected String mainRealmName;  
     protected ClassWorld world;
+    protected Instrumentation inst;
 
     public Launcher() {
         this.systemClassLoader = Thread.currentThread().getContextClassLoader();
@@ -169,40 +170,65 @@ public class Launcher extends org.codehaus.plexus.classworlds.launcher.Launcher 
         info("Main Realm: %s", launcher.getMainRealmName());
         info("Main Class: %s", launcher.getMainClassName());
         
-            /* Do I need this?
         try {
-            launcher.launch(args);
+            launcher.launch(agentArgs, inst);
         }
-        catch ( InvocationTargetException e ) {
-            ClassRealm realm = launcher.getWorld().getRealm( launcher.getMainRealmName() );
-            
-            URL[] constituents = realm.getURLs();
-            
-            System.out.println( "---------------------------------------------------" );
-            
-            for (int i = 0; i < constituents.length; i++) {
-                System.out.println( "constituent[" + i + "]: " + constituents[i] );
+        catch (InvocationTargetException e) {
+            try {
+                ClassRealm realm = launcher.getWorld().getRealm( launcher.getMainRealmName() );
+                
+                URL[] constituents = realm.getURLs();
+                
+                System.out.println( "---------------------------------------------------" );
+                
+                for (int i = 0; i < constituents.length; i++) {
+                    System.out.println( "constituent[" + i + "]: " + constituents[i] );
+                }
+                
+                System.out.println( "---------------------------------------------------" );
+                
+                // Decode ITE (if we can)
+                Throwable t = e.getTargetException();
+                
+                if (t instanceof Exception) {
+                    throw (Exception) t;
+                }
+                
+                if ( t instanceof Error ) {
+                    throw (Error) t;
+                }
             }
-            
-            System.out.println( "---------------------------------------------------" );
-            
-            // Decode ITE (if we can)
-            Throwable t = e.getTargetException();
-            
-            if (t instanceof Exception) {
-                throw (Exception) t;
+            catch (Exception ee) {
+                ee.printStackTrace();
             }
-            
-            if ( t instanceof Error ) {
-                 throw (Error) t;
-            }
-            
-            // Else just toss the ITE
-            throw e;
-            }
-            */
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         
         // new Thread(new MavenLoader(AgentMain.getMavenHome())).start();
+    }
+
+    public void launch(final String args, final Instrumentation inst) throws ClassNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchRealmException{
+        final Method mainMethod = getMainMethod();
+        
+        final ClassLoader cl = getMainRealm();
+        Thread.currentThread().setContextClassLoader(cl);
+
+        final Object ret = mainMethod.invoke(getMainClass(), new Object[] {args, inst, getWorld()});
+    }
+
+    protected Method getMainMethod() throws ClassNotFoundException, NoSuchMethodException, NoSuchRealmException {
+        final Class cworlds = getMainRealm().loadClass(ClassWorld.class.getName());
+        final Method mainMethod = getMainClass().getMethod("premain", new Class[] { String.class, Instrumentation.class, cworlds });
+        
+        int modifiers = mainMethod.getModifiers();
+        if (Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers)) {
+            if (mainMethod.getReturnType() == Integer.TYPE || mainMethod.getReturnType() == Void.TYPE) {
+                return mainMethod;
+            }
+        }
+        throw new NoSuchMethodException("public static void main(String[] args, ClassWorld world)");
     }
     
     /**
